@@ -1,0 +1,62 @@
+#! /bin/bash
+
+options=("ps" "top" "vmstat" "iostat")
+selected=0
+
+while true; do
+    clear
+    echo "What you want to do?:"
+    for i in "${!options[@]}"; do
+        if [ $((i)) -eq $selected ]; then
+            echo " > ${options[i]}"
+        else
+            echo "    ${options[i]}"
+        fi
+    done
+
+    read -n 1 key
+
+    case $key in
+        'A')  # upkey
+            ((selected--))
+            [ $selected -lt 0 ] && selected=$((${#options[@]} - 1))
+            ;;
+        'B')  # downkey
+            ((selected++))
+            [ $selected -ge ${#options[@]} ] && selected=0
+            ;;
+        '')   # enterkey
+            break
+            ;;
+        *)    # other key
+            ;;
+    esac
+done
+
+clear
+
+echo "select option: ${options[selected]}"
+echo "=========================="
+sleep 1
+
+case $selected in
+    0)
+        RESPONSE="ps"
+        ;;
+    1)
+        RESPONSE="top"
+        ;;
+    2)
+        RESPONSE="vmstat"
+        ;;
+    3)
+        RESPONSE="iostat"
+        ;;
+    *)
+        ;;
+esac
+
+if [ "$RESPONSE" == "ps" ]; then
+    echo -e "This command is enable to check the running processes in snapshot form.\n\n-option\n aux : Show detailed information about All processes in the system.\n -ef : Show all running processes and parent-child relationtship in the system regardless connect terminal."
+#    ps -ef
+fi
